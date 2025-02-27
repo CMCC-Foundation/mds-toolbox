@@ -1,0 +1,7 @@
+# directories
+__pycache__
+.idea
+.vscode
+
+# extensions
+*.nc

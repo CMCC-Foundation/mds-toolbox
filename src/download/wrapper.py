@@ -1,13 +1,12 @@
+import contextlib
+import fcntl
 import fnmatch
 import glob
 import json
+import logging
 import os
 import shutil
 import tempfile
-import logging
-import fcntl
-import contextlib
-
 from collections import namedtuple
 from typing import List
 
@@ -15,10 +14,9 @@ import boto3
 from botocore import UNSIGNED
 from botocore.config import Config
 
+from src.download import utils, copernicus
 from src.download.utils import etag_match
 from src.lib import logging_config
-from src.download import utils, copernicus
-
 
 # log
 logger = logging_config.set_up("mds")

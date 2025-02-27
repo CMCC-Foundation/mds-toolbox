@@ -14,11 +14,11 @@ from mds.download import mds_s3
 
 
 @click.group()
-def main():
+def cli():
     pass
 
 
-@main.command()
+@cli.command()
 @click.option(
     "-o", "--output-directory", required=True, type=str, help="Output directory"
 )
@@ -83,7 +83,7 @@ def subset(**kwargs):
     wrapper.mds_download("subset", **kwargs)
 
 
-@main.command()
+@cli.command()
 @click.option(
     "-f", "--filter", required=False, type=str, help="Filter on the online files"
 )
@@ -132,7 +132,7 @@ def get(**kwargs):
         wrapper.mds_download("get", **kwargs)
 
 
-@main.command()
+@cli.command()
 @click.argument("dataset_id", type=str)
 @click.argument("mds_filter", type=str)
 @click.option(
@@ -143,7 +143,7 @@ def file_list(*args, **kwargs):
     print(f"{' '.join(mds_file_list)}")
 
 
-@main.command()
+@cli.command()
 @click.option(
     "-e",
     "--s3_file",
@@ -180,7 +180,7 @@ def etag(**kwargs):
         print(f"{s3_file.name} {s3_file.etag}")
 
 
-@main.command()
+@cli.command()
 @click.option(
     "-b", "--bucket", "s3_bucket", required=True, type=str, help="Bucket name"
 )
@@ -249,7 +249,7 @@ def s3_get(**kwargs):
     mds_s3.download_files(**kwargs)
 
 
-@main.command()
+@cli.command()
 @click.option(
     "-b",
     "--bucket",
@@ -287,4 +287,4 @@ def s3_list(**kwargs):
 
 
 if __name__ == "__main__":
-    main()
+    cli()

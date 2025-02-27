@@ -165,7 +165,7 @@ def mds_download(
     destination_file = os.path.join(output_directory, output_filename)
     files_found = glob.glob(destination_file)
     if not overwrite and len(files_found) > 0:
-        logger.info(f'File already exists: {", ".join(files_found)}')
+        logger.info(f"File already exists: {', '.join(files_found)}")
         return
 
     # get temporary directory where to download the file
@@ -324,4 +324,4 @@ def download_file(*args, **kwargs):
 
 
 def log():
-    logger.info("I'm wrappper")
+    logger.info("I'm wrapper")

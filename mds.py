@@ -9,8 +9,8 @@ __email__ = "antonio.mariani@cmcc.it"
 
 import click
 
-from src.download import wrapper
-from src.download import mds_s3
+from mds.download import wrapper
+from mds.download import mds_s3
 
 
 @click.group()

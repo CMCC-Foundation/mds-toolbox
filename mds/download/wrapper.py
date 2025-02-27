@@ -14,9 +14,9 @@ import boto3
 from botocore import UNSIGNED
 from botocore.config import Config
 
-from src.download import utils, copernicus
-from src.download.utils import etag_match
-from src.lib import logging_config
+from mds.download import utils, copernicus
+from mds.download.utils import etag_match
+from mds.lib import logging_config
 
 # log
 logger = logging_config.set_up("mds")

@@ -7,8 +7,8 @@ import os
 from botocore import UNSIGNED
 from botocore.config import Config
 
-from src.download.s3file import S3File
-from src.lib import logging_config
+from mds.download.s3file import S3File
+from mds.lib import logging_config
 
 # conf
 lock = multiprocessing.Lock()

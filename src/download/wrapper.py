@@ -113,7 +113,7 @@ def mds_list(dataset_id, mds_filter: str, quiet=True, dataset_version=None) -> L
         pass
 
     if not os.path.exists(output_file):
-        raise ValueError(f"An error occurred")
+        raise ValueError("An error occurred")
 
     with open(output_file, "r") as f:
         data = f.readlines()
@@ -190,7 +190,7 @@ def mds_download(
             return
 
         # an error must occur in the previous download, restart it
-        logger.info(f"Zombie download dir found, cleaning it")
+        logger.info("Zombie download dir found, cleaning it")
         shutil.rmtree(temporary_dl_directory)
 
     # safe mkdir and write pid
@@ -322,7 +322,7 @@ def file_lock(file):
 
 @utils.elapsed_time
 def download_file(*args, **kwargs):
-    print(f"Downloading")
+    print("Downloading")
 
 
 def log():

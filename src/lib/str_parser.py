@@ -1,10 +1,20 @@
 from collections import namedtuple
 
-FN_PLACEHOLDERS = namedtuple('FN_PLACEHOLDERS', [
-    'base_dir', 'prodDate', 'refDate',
-    'DR', 'DRyyyy', 'DRmm', 'DRdd',
-    'DPyyyy', 'DPmm', 'DPdd'
-])
+FN_PLACEHOLDERS = namedtuple(
+    "FN_PLACEHOLDERS",
+    [
+        "base_dir",
+        "prodDate",
+        "refDate",
+        "DR",
+        "DRyyyy",
+        "DRmm",
+        "DRdd",
+        "DPyyyy",
+        "DPmm",
+        "DPdd",
+    ],
+)
 
 
 def build_fn_placeholders(base_dir: str, ref_date: str, prod_date: str):
@@ -21,23 +31,25 @@ def build_fn_placeholders(base_dir: str, ref_date: str, prod_date: str):
         DRdd=ref_dd,
         DPyyyy=prod_yyyy,
         DPmm=prod_mm,
-        DPdd=prod_dd
+        DPdd=prod_dd,
     )
 
 
-def replace_placeholders(str_template: str, placeholders: FN_PLACEHOLDERS, other_placeholders: dict = None):
+def replace_placeholders(
+    str_template: str, placeholders: FN_PLACEHOLDERS, other_placeholders: dict = None
+):
     """
-        Replace placeholders in a string template with values from named tuple placeholders and
-        optionally from a dictionary of other placeholders. The other placeholders has higher priority.
+    Replace placeholders in a string template with values from named tuple placeholders and
+    optionally from a dictionary of other placeholders. The other placeholders has higher priority.
 
-        Args:
-        - str_template (str): The string template where placeholders will be replaced.
-        - placeholders (namedtuple): Named tuple containing values for placeholders.
-        - other_placeholders (dict, optional): Dictionary containing additional placeholders and their values.
-            It overwrites value in placeholders dict if a common value is present
+    Args:
+    - str_template (str): The string template where placeholders will be replaced.
+    - placeholders (namedtuple): Named tuple containing values for placeholders.
+    - other_placeholders (dict, optional): Dictionary containing additional placeholders and their values.
+        It overwrites value in placeholders dict if a common value is present
 
-        Returns:
-        - str: The modified string with placeholders replaced.
+    Returns:
+    - str: The modified string with placeholders replaced.
     """
     dict_placeholders = placeholders._asdict()
     # If other_placeholders is provided, update dict_placeholders with its values - overwrite common parameters
@@ -47,6 +59,6 @@ def replace_placeholders(str_template: str, placeholders: FN_PLACEHOLDERS, other
     new_str = str_template
     # Replace each placeholder in the template with its corresponding value
     for placeholder, value in dict_placeholders.items():
-        new_str = new_str.replace(f'{{{placeholder}}}', value)
+        new_str = new_str.replace(f"{{{placeholder}}}", value)
 
     return new_str

@@ -1,13 +1,12 @@
+import contextlib
+import fcntl
 import fnmatch
 import glob
 import json
+import logging
 import os
 import shutil
 import tempfile
-import logging
-import fcntl
-import contextlib
-
 from collections import namedtuple
 from typing import List
 
@@ -15,31 +14,32 @@ import boto3
 from botocore import UNSIGNED
 from botocore.config import Config
 
+from src.download import utils, copernicus
 from src.download.utils import etag_match
 from src.lib import logging_config
-from src.download import utils, copernicus
-
 
 # log
-logger = logging_config.set_up('mds')
+logger = logging_config.set_up("mds")
 
 # conf
-DOWNLOAD_MODES = ['subset', 'get']
+DOWNLOAD_MODES = ["subset", "get"]
 S3_ENDPOINT = "https://s3.waw3-1.cloudferro.com"
-S3_FILE = namedtuple('S3_FILE', ['name', 'etag', 'last_modified'])
-SYNC_FILE = '.sync'
-DB_FILE = '.etag.json'
+S3_FILE = namedtuple("S3_FILE", ["name", "etag", "last_modified"])
+SYNC_FILE = ".sync"
+DB_FILE = ".etag.json"
 
 
 def extract_s3_info_from_path(s3_file: str):
-    s3_file = s3_file.removeprefix('s3://')
-    s3_bucket = s3_file.split('/')[0]
-    s3_path = s3_file.removeprefix(f'{s3_bucket}/')
+    s3_file = s3_file.removeprefix("s3://")
+    s3_bucket = s3_file.split("/")[0]
+    s3_path = s3_file.removeprefix(f"{s3_bucket}/")
     return s3_bucket, s3_path
 
 
 @utils.elapsed_time
-def mds_etag(s3_file, product, dataset_id, version, subdir, mds_filter) -> List[S3_FILE]:
+def mds_etag(
+    s3_file, product, dataset_id, version, subdir, mds_filter
+) -> List[S3_FILE]:
     s3_endpoint = S3_ENDPOINT
     s3 = boto3.client(
         "s3", endpoint_url=s3_endpoint, config=Config(signature_version=UNSIGNED)
@@ -49,20 +49,22 @@ def mds_etag(s3_file, product, dataset_id, version, subdir, mds_filter) -> List[
     if s3_file:
         s3_bucket, s3_path = extract_s3_info_from_path(s3_file)
     else:
-        s3_bucket, s3_path = get_s3_info(s3_endpoint, product, dataset_id, version, subdir)
+        s3_bucket, s3_path = get_s3_info(
+            s3_endpoint, product, dataset_id, version, subdir
+        )
 
     logger.debug(f"Listing files in {s3_bucket}/{s3_path}")
 
     files_found = []
     for s3_result in paginator.paginate(Bucket=s3_bucket, Prefix=s3_path):
-        if 'Contents' not in s3_result:
+        if "Contents" not in s3_result:
             raise ValueError(f"No result found for {s3_bucket}/{s3_path}")
 
-        contents = s3_result['Contents']
+        contents = s3_result["Contents"]
         for content in contents:
-            etag = content['ETag'].replace('"', '')
-            s3_file = content['Key']
-            last_modified = content['LastModified']
+            etag = content["ETag"].replace('"', "")
+            s3_file = content["Key"]
+            last_modified = content["LastModified"]
             if not mds_filter or fnmatch.fnmatch(s3_file, mds_filter):
                 files_found.append(S3_FILE(s3_file, etag, last_modified))
 
@@ -74,29 +76,29 @@ def get_s3_info(s3_endpoint, product, dataset, version, subdir):
     Query copernicium stat web site to retrieve info about s3 bucket and s3 path
     """
     href_native = copernicus.get_s3_native(product, dataset, version)
-    native_complete_no_endpoint = href_native.replace(f'{s3_endpoint}/', '')
-    s3_bucket = native_complete_no_endpoint.split('/')[0]
-    s3_path = native_complete_no_endpoint.removeprefix(f'{s3_bucket}/')
-    s3_path = f'{s3_path}/{subdir}'
+    native_complete_no_endpoint = href_native.replace(f"{s3_endpoint}/", "")
+    s3_bucket = native_complete_no_endpoint.split("/")[0]
+    s3_path = native_complete_no_endpoint.removeprefix(f"{s3_bucket}/")
+    s3_path = f"{s3_path}/{subdir}"
     return s3_bucket, s3_path
 
 
 @utils.elapsed_time
 def mds_list(dataset_id, mds_filter: str, quiet=True, dataset_version=None) -> List:
     # mds write as default this file - name cannot be chosen via python
-    mds_output_filename = 'files_to_download.txt'
+    mds_output_filename = "files_to_download.txt"
     tempdir = tempfile.mkdtemp()
-    output_file = f'{tempdir}/{mds_output_filename}'
+    output_file = f"{tempdir}/{mds_output_filename}"
 
     # mds_output_filename is ignored
     mds_get_list_attrs = {
-        'dataset_id': dataset_id,
-        'filter': mds_filter,
-        'output_directory': tempdir,
-        'create_file_list': mds_output_filename,
-        'force_download': True,
-        'disable_progress_bar': True,
-        'dataset_version': dataset_version
+        "dataset_id": dataset_id,
+        "filter": mds_filter,
+        "output_directory": tempdir,
+        "create_file_list": mds_output_filename,
+        "force_download": True,
+        "disable_progress_bar": True,
+        "dataset_version": dataset_version,
     }
 
     try:
@@ -109,9 +111,9 @@ def mds_list(dataset_id, mds_filter: str, quiet=True, dataset_version=None) -> L
         pass
 
     if not os.path.exists(output_file):
-        raise ValueError(f'An error occurred')
+        raise ValueError("An error occurred")
 
-    with open(output_file, 'r') as f:
+    with open(output_file, "r") as f:
         data = f.readlines()
 
     shutil.rmtree(tempdir, ignore_errors=True)
@@ -121,10 +123,10 @@ def mds_list(dataset_id, mds_filter: str, quiet=True, dataset_version=None) -> L
 
 @utils.elapsed_time
 def mds_download(
-        download_mode: str,
-        dry_run: bool = False,
-        overwrite: bool = False,
-        **kwargs,
+    download_mode: str,
+    dry_run: bool = False,
+    overwrite: bool = False,
+    **kwargs,
 ):
     """
     Wrapper around copernicusmarine too to add missing features:
@@ -145,23 +147,25 @@ def mds_download(
     # check if download mode is supported
     if download_mode not in DOWNLOAD_MODES:
         raise ValueError(f"Download mode not supported: '{download_mode}'")
-    logger.info(f'Download mode: {download_mode}')
+    logger.info(f"Download mode: {download_mode}")
 
     # get mandatory args
-    output_filename = kwargs['output_filename'] if download_mode == "subset" else kwargs['filter']
-    output_directory = kwargs['output_directory']
+    output_filename = (
+        kwargs["output_filename"] if download_mode == "subset" else kwargs["filter"]
+    )
+    output_directory = kwargs["output_directory"]
 
     # set output directory
     if output_directory is None:
         output_directory = utils.cwd()
-    logger.info(f'Output directory: {output_directory}')
+    logger.info(f"Output directory: {output_directory}")
 
     # check if  the file  is already present
-    logger.info(f'Output filename: {output_filename}')
+    logger.info(f"Output filename: {output_filename}")
     destination_file = os.path.join(output_directory, output_filename)
     files_found = glob.glob(destination_file)
     if not overwrite and len(files_found) > 0:
-        logger.info(f'File already exists: {", ".join(files_found)}')
+        logger.info(f"File already exists: {', '.join(files_found)}")
         return
 
     # get temporary directory where to download the file
@@ -169,90 +173,96 @@ def mds_download(
         output_filename=output_filename,
         base_directory=output_directory,
     )
-    logger.debug(f'Temporary directory: {temporary_dl_directory}')
+    logger.debug(f"Temporary directory: {temporary_dl_directory}")
 
     # pid
-    pid_file = os.path.join(temporary_dl_directory, '.pid')
+    pid_file = os.path.join(temporary_dl_directory, ".pid")
 
     # check if another download is ongoing or a zombie directory is present
     if os.path.exists(temporary_dl_directory):
-        logger.debug(f'Found temporary directory: {temporary_dl_directory}')
+        logger.debug(f"Found temporary directory: {temporary_dl_directory}")
         if os.path.exists(pid_file) and utils.another_instance_in_execution(pid_file):
-            logger.info(f'Another download process already exists: {pid_file}, nothing to do...')
+            logger.info(
+                f"Another download process already exists: {pid_file}, nothing to do..."
+            )
             return
 
         # an error must occur in the previous download, restart it
-        logger.info(f'Zombie download dir found, cleaning it')
+        logger.info("Zombie download dir found, cleaning it")
         shutil.rmtree(temporary_dl_directory)
 
     # safe mkdir and write pid
     try:
         os.makedirs(temporary_dl_directory, exist_ok=False)
-        with open(pid_file, 'w') as f:
+        with open(pid_file, "w") as f:
             f.write(f"{os.getpid()}\n")
     except OSError as e:
         # if two processes start in the same moment the previous pid check can fail
-        logger.error(f'Cannot create temporary directory: {temporary_dl_directory}, possible conflict ongoing')
+        logger.error(
+            f"Cannot create temporary directory: {temporary_dl_directory}, possible conflict ongoing"
+        )
         raise e
 
     if dry_run:
         return
 
-    kwargs['output_directory'] = temporary_dl_directory
+    kwargs["output_directory"] = temporary_dl_directory
     download_func = get_download_func(download_mode)
     try:
         download_func(**kwargs)
     except SystemExit as e:
-        logger.error(f'An error occurs during download: {e}')
+        logger.error(f"An error occurs during download: {e}")
 
         # check if the file is not on mds
-        dataset_id = kwargs['dataset_id']
-        mds_filter = kwargs['filter']
+        dataset_id = kwargs["dataset_id"]
+        mds_filter = kwargs["filter"]
         file_list = mds_list(dataset_id, mds_filter, quiet=False)
         if len(file_list) == 0:
             shutil.rmtree(temporary_dl_directory)
-            raise FileNotFoundError(f'No match found for {mds_filter} if {dataset_id}')
+            raise FileNotFoundError(f"No match found for {mds_filter} if {dataset_id}")
         shutil.rmtree(temporary_dl_directory)
         raise e
     except Exception as e:
-        logger.error(f'An error occurs during downloading {kwargs}: {e}')
+        logger.error(f"An error occurs during downloading {kwargs}: {e}")
         shutil.rmtree(temporary_dl_directory)
         raise e
 
     # move in output_directory
-    for file in glob.glob(os.path.join(temporary_dl_directory, '*')):
-        logger.info(f'mv {file} to {output_directory}')
+    for file in glob.glob(os.path.join(temporary_dl_directory, "*")):
+        logger.info(f"mv {file} to {output_directory}")
         utils.mv_overwrite(file, output_directory)
 
-    logger.info(f'Removing temporary directory: {temporary_dl_directory}')
+    logger.info(f"Removing temporary directory: {temporary_dl_directory}")
     shutil.rmtree(temporary_dl_directory)
 
 
 def get_download_func(download_mode):
-    if download_mode == 'subset':
+    if download_mode == "subset":
         return copernicus.subset
-    if download_mode == 'get':
+    if download_mode == "get":
         return copernicus.get
 
-    raise ValueError(f'Unknown download mode: {download_mode}')
+    raise ValueError(f"Unknown download mode: {download_mode}")
 
 
 @utils.elapsed_time
 def mds_update_download(**kwargs):
-    mds_filter = kwargs['filter']
-    output_directory = kwargs['output_directory']
+    mds_filter = kwargs["filter"]
+    output_directory = kwargs["output_directory"]
 
     # get list of files
-    dataset_id = kwargs['dataset_id']
+    dataset_id = kwargs["dataset_id"]
     s3_files_list = mds_list(dataset_id, mds_filter, quiet=False)
 
     if len(s3_files_list) == 0:
-        raise FileNotFoundError(f'No matching files found for {dataset_id}/{mds_filter} on mds')
+        raise FileNotFoundError(
+            f"No matching files found for {dataset_id}/{mds_filter} on mds"
+        )
 
     # for each file get etag
     s3_files = []
     for s3_file in s3_files_list:
-        logger.info(f'Try to obtain Etag for: {s3_file}')
+        logger.info(f"Try to obtain Etag for: {s3_file}")
         s3_files.extend(mds_etag(s3_file, *[None for _ in range(5)]))
 
     # download
@@ -261,41 +271,41 @@ def mds_update_download(**kwargs):
         dest_file = str(os.path.join(output_directory, filename))
 
         if os.path.exists(dest_file) and etag_match(dest_file, s3_file.etag):
-            logger.info(f'{s3_file} already updated, nothing to do...')
+            logger.info(f"{s3_file} already updated, nothing to do...")
             continue
 
-        bk_file = f'{dest_file}.bk'
+        bk_file = f"{dest_file}.bk"
         if os.path.exists(dest_file):
-            logger.info(f'New version available for {s3_file.name}')
-            logger.info(f'Creating backup file: {bk_file}')
+            logger.info(f"New version available for {s3_file.name}")
+            logger.info(f"Creating backup file: {bk_file}")
             shutil.move(dest_file, bk_file)
 
-        kwargs['filter'] = filename
-        mds_download('get', **kwargs)
+        kwargs["filter"] = filename
+        mds_download("get", **kwargs)
 
         # update json file
         # update_etag(filename, output_directory, s3_file.etag)
 
         if os.path.exists(bk_file):
-            logger.info(f'Removing backup file: {bk_file}')
+            logger.info(f"Removing backup file: {bk_file}")
             os.remove(bk_file)
 
 
 @utils.elapsed_time
 def update_etag(filename, output_directory, etag):
     sync_file = str(os.path.join(output_directory, SYNC_FILE))
-    with open(sync_file, 'a') as s:
+    with open(sync_file, "a") as s:
         with file_lock(s):
             db_file = str(os.path.join(output_directory, DB_FILE))
             try:
-                with open(db_file, 'r') as f_read:
+                with open(db_file, "r") as f_read:
                     data = json.load(f_read)
             except FileNotFoundError:
                 data = {}
 
             data[filename] = etag
 
-            with open(db_file, 'w') as f_write:
+            with open(db_file, "w") as f_write:
                 json.dump(data, f_write, indent=4)
 
 
@@ -310,8 +320,8 @@ def file_lock(file):
 
 @utils.elapsed_time
 def download_file(*args, **kwargs):
-    print(f'Downloading')
+    print("Downloading")
 
 
 def log():
-    logger.info("I'm wrappper")
+    logger.info("I'm wrapper")

@@ -28,7 +28,7 @@ def another_instance_in_execution(pid_file: str) -> bool:
 
 
 def pid_is_running(pid: int) -> bool:
-    """ Check For the existence of a unix pid. 0 signal has no effect on the process"""
+    """Check For the existence of a unix pid. 0 signal has no effect on the process"""
     try:
         # 0 signal doesn't have any effect
         os.kill(pid, 0)
@@ -70,7 +70,7 @@ def get_temporary_directory(output_filename: str, base_directory: str) -> str:
     """
     md5_filename = hashlib.md5(output_filename.encode()).hexdigest()
 
-    return os.path.join(base_directory, f'.{md5_filename}')
+    return os.path.join(base_directory, f".{md5_filename}")
 
 
 def mv_overwrite(file: str, output_directory: str):
@@ -96,24 +96,29 @@ def factor_of_1_mb(filesize, num_parts):
 
 def calc_etag(input_file, part_size):
     md5_digests = []
-    with open(input_file, 'rb') as f:
-        for chunk in iter(lambda: f.read(part_size), b''):
+    with open(input_file, "rb") as f:
+        for chunk in iter(lambda: f.read(part_size), b""):
             md5_digests.append(hashlib.md5(chunk).digest())
-    return hashlib.md5(b''.join(md5_digests)).hexdigest() + '-' + str(len(md5_digests))
+    return hashlib.md5(b"".join(md5_digests)).hexdigest() + "-" + str(len(md5_digests))
 
 
 def possible_partsizes(filesize, num_parts):
-    return lambda part_size: part_size < filesize and (float(filesize) / float(part_size)) <= num_parts
+    return (
+        lambda part_size: part_size < filesize
+        and (float(filesize) / float(part_size)) <= num_parts
+    )
 
 
 def compute_etag(input_file, etag):
     filesize = os.path.getsize(input_file)
-    num_parts = int(etag.split('-')[1])
+    num_parts = int(etag.split("-")[1])
 
     partsizes = [  # Default Partsizes Map
         8388608,  # aws_cli/boto3
         15728640,  # s3cmd
-        factor_of_1_mb(filesize, num_parts)  # Used by many clients to upload large files
+        factor_of_1_mb(
+            filesize, num_parts
+        ),  # Used by many clients to upload large files
     ]
 
     for part_size in filter(possible_partsizes(filesize, num_parts), partsizes):
@@ -124,24 +129,26 @@ def compute_etag(input_file, etag):
 
 
 def elapsed_time(func: Callable):
-
     def decorator(*args, **kwargs):
         start_time = time.perf_counter()
-        func_args = f'args={args}' if args else 'args=None'
-        func_kwargs = f'kwargs={kwargs}' if kwargs else 'kwargs=None'
+        func_args = f"args={args}" if args else "args=None"
+        func_kwargs = f"kwargs={kwargs}" if kwargs else "kwargs=None"
         result = func(*args, **kwargs)
         elaps_time = time.perf_counter() - start_time
-        logger.info(f'Elapsed time: {elaps_time} (s) - {func.__name__}({func_args}, {func_kwargs})')
+        logger.info(
+            f"Elapsed time: {elaps_time} (s) - {func.__name__}({func_args}, {func_kwargs})"
+        )
         return result
+
     return decorator
 
 
 def etag_match(dest_file, digest: str):
-    if '-' in digest:
-        logger.debug('Comparing Etag')
+    if "-" in digest:
+        logger.debug("Comparing Etag")
         local_digest = compute_etag()
     else:
-        logger.debug('Comparing md5')
+        logger.debug("Comparing md5")
         local_digest = compute_md5(dest_file)
 
     return local_digest == digest

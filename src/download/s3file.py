@@ -12,4 +12,4 @@ class S3File(NamedTuple):
         return f"<S3File(bucket='{self.bucket}'"
 
     def __str__(self):
-        return f's3://{self.bucket}/{self.file} - etag={self.etag} - last_modified={self.last_modified}'
+        return f"s3://{self.bucket}/{self.file} - etag={self.etag} - last_modified={self.last_modified}"

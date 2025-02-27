@@ -6,7 +6,7 @@ or [botos3](https://boto3.amazonaws.com/v1/documentation/api/latest/index.html)
 
 [![boto3](https://img.shields.io/badge/boto3->1.34-blue.svg)](https://boto3.amazonaws.com/v1/documentation/api/latest/index.html)
 [![copernicusmarine](https://img.shields.io/badge/copernicusmarine->1.06-blue.svg)](https://help.marine.copernicus.eu/en/collections/4060068-copernicus-marine-toolbox)
-
+[![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
 
 <!-- TOC -->
 * [Marine Data Store ToolBox](#marine-data-store-toolbox)

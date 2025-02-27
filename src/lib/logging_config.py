@@ -10,7 +10,7 @@ def get_my_fmt():
         fmt="[%(asctime)s] - %(levelname)s: %(message)s",
         # TODO try to enable it only if logging level is DEBUG
         # fmt="[%(asctime)s] - %(levelname)s - %(name)s.%(funcName)s: %(message)s",
-        datefmt="%Y-%m-%dT%H:%M:%SZ"
+        datefmt="%Y-%m-%dT%H:%M:%SZ",
     )
 
 
@@ -24,7 +24,9 @@ def set_level(level: int) -> None:
     root_logger.setLevel(logger_level)
 
 
-def add_file_handler(my_logger: logging.Logger = None, log_filename: str = None, log_dir: str = None) -> None:
+def add_file_handler(
+    my_logger: logging.Logger = None, log_filename: str = None, log_dir: str = None
+) -> None:
     """
     Add a file handler to the python logging module
     :param my_logger: logger to update with file handler
@@ -32,7 +34,7 @@ def add_file_handler(my_logger: logging.Logger = None, log_filename: str = None,
     :param log_dir: Path of the dir where store the file
     """
     if log_dir is None:
-        log_dir = f'{os.getcwd()}/.log'
+        log_dir = f"{os.getcwd()}/.log"
     os.makedirs(log_dir, exist_ok=True)
 
     if log_filename is None:
@@ -48,7 +50,7 @@ def add_file_handler(my_logger: logging.Logger = None, log_filename: str = None,
 
     # enable file handler
     if not my_logger:
-        print('Configuring root logger')
+        print("Configuring root logger")
         my_logger = logging.getLogger()
     my_logger.addHandler(file_handler)
 
@@ -72,5 +74,3 @@ def set_up(name=None) -> logging.Logger:
     # Enable stream handler
     my_logger.addHandler(stream_handler)
     return my_logger
-
-

@@ -13,39 +13,42 @@ from src.lib import logging_config
 # conf
 lock = multiprocessing.Lock()
 S3_ENDPOINT = "https://s3.waw3-1.cloudferro.com"
-logger = logging_config.set_up('s3')
+logger = logging_config.set_up("s3")
 
 
 class Singleton(type):
     """Multiprocessing safe implementation of a singleton class"""
+
     _instances = {}
 
     def __call__(cls, *args, **kwargs):
         if cls not in cls._instances:
             with lock:
                 if cls not in cls._instances:
-                    cls._instances[cls] = super(Singleton, cls).__call__(*args, **kwargs)
+                    cls._instances[cls] = super(Singleton, cls).__call__(
+                        *args, **kwargs
+                    )
         return cls._instances[cls]
 
 
 def clean_corrupted_file(dest_file: str):
     """Removes corrupted file if it exists"""
     # generally s3_client download the file as dest_file.STRING
-    files_to_clean = glob.glob(f'{dest_file}.*')
+    files_to_clean = glob.glob(f"{dest_file}.*")
     for file_to_clean in files_to_clean:
-        logger.info(f'Cleaning {file_to_clean}')
+        logger.info(f"Cleaning {file_to_clean}")
         os.remove(file_to_clean)
 
 
 def build_s3_path(dataset, products, subdir, version):
     """Build the s3 path with the provided information"""
-    s3_path = f'native/{products}'
+    s3_path = f"native/{products}"
     if dataset:
-        s3_path += f'/{dataset}'
+        s3_path += f"/{dataset}"
     if version:
-        s3_path += f'_{version}'
+        s3_path += f"_{version}"
     if subdir:
-        s3_path += f'/{subdir}'
+        s3_path += f"/{subdir}"
     return s3_path
 
 
@@ -53,6 +56,7 @@ class S3(metaclass=Singleton):
     """
     Multiprocessing safe implementation of a singleton class to provide a unique client connection to a s3 endpoint.
     """
+
     _instance = None
 
     def __new__(cls, *args, **kwargs):
@@ -76,8 +80,14 @@ class S3(metaclass=Singleton):
         return self.__s3
 
     def file_list(
-            self, s3_bucket: str, products: str, dataset: str, version: str, file_filter: str,
-            subdir: str = None, recursive: bool = False
+        self,
+        s3_bucket: str,
+        products: str,
+        dataset: str,
+        version: str,
+        file_filter: str,
+        subdir: str = None,
+        recursive: bool = False,
     ) -> list[S3File]:
         """
         Listing file on s3 bucket and return the list of file that match the provided filter
@@ -93,20 +103,22 @@ class S3(metaclass=Singleton):
         """
         files_found = []
         paginator = self.__paginator
-        delimiter = '*' if recursive else '/'
+        delimiter = "*" if recursive else "/"
 
         s3_path = build_s3_path(dataset, products, subdir, version)
         logger.info(f"Listing files in {s3_bucket}/{s3_path}")
 
-        for s3_result in paginator.paginate(Bucket=s3_bucket, Prefix=f'{s3_path}/', Delimiter=delimiter):
-            if 'Contents' not in s3_result:
+        for s3_result in paginator.paginate(
+            Bucket=s3_bucket, Prefix=f"{s3_path}/", Delimiter=delimiter
+        ):
+            if "Contents" not in s3_result:
                 raise FileNotFoundError(f"No result found for {s3_bucket}/{s3_path}")
 
-            for content in s3_result['Contents']:
-                etag = content['ETag'].replace('"', '')
-                s3_file = content['Key']
-                last_modified = content['LastModified']
-                if fnmatch.fnmatch(s3_file, f'*{file_filter}*'):
+            for content in s3_result["Contents"]:
+                etag = content["ETag"].replace('"', "")
+                s3_file = content["Key"]
+                last_modified = content["LastModified"]
+                if fnmatch.fnmatch(s3_file, f"*{file_filter}*"):
                     files_found.append(S3File(s3_bucket, s3_file, etag, last_modified))
 
         return files_found
@@ -121,13 +133,11 @@ class S3(metaclass=Singleton):
         s3 = self.s3
         try:
             clean_corrupted_file(dest_file)
-            s3.download_file(
-                s3_bucket,
-                s3_file,
-                dest_file
-            )
+            s3.download_file(s3_bucket, s3_file, dest_file)
             if not os.path.isfile(dest_file):
-                raise RuntimeError(f'Unable to download {s3_file} as {dest_file}, unknown error')
+                raise RuntimeError(
+                    f"Unable to download {s3_file} as {dest_file}, unknown error"
+                )
         except BaseException as e:
             logger.critical(f"An error occurs during the download: {e}")
             clean_corrupted_file(dest_file)

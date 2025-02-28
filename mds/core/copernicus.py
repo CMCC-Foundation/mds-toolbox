@@ -3,7 +3,7 @@ import copernicusmarine
 import requests
 
 from typing import List
-from mds.download import utils
+from mds.core import utils
 
 
 GET_MANDATORY_ATTRS = ["filter", "output_directory", "dataset_id"]

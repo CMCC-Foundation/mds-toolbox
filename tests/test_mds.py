@@ -2,8 +2,8 @@ import fnmatch
 import os
 import pytest
 
-import mds.download.wrapper
-from mds.download import utils
+import mds.core.wrapper
+from mds.core import utils
 
 
 def test_get_temporary_directory():

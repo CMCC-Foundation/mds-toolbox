@@ -16,10 +16,8 @@ from botocore.config import Config
 
 from mds.core import utils, copernicus
 from mds.core.utils import etag_match
-from mds.utils import logging_config
 
-# log
-logger = logging_config.set_up("mds")
+logger = logging.getLogger("mds")
 
 # conf
 DOWNLOAD_MODES = ["subset", "get"]

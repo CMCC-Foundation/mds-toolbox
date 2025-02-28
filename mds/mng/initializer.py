@@ -1,5 +1,7 @@
 """Entry point to mds-toolbox API"""
 
+import functools
+
 import mds
 
 
@@ -7,10 +9,11 @@ def init_app():
     """Initialize the application functions before the execution"""
 
     def decorated(func):
+        @functools.wraps(func)
         def setup(**kwargs):
             """
             Extract app settings and configure application setup, then start mds functions.
-            
+
             Args:
                 **kwargs: Arbitrary keyword arguments passed to the function.
             """

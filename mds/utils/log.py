@@ -3,6 +3,8 @@ import logging.config
 from mds.conf import settings
 from mds.utils.module_loading import import_string
 
+LOGGER_NAME = "mds"
+
 DEFAULT_LOGGING = {
     "disable_existing_loggers": False,
     "formatters": {
@@ -21,7 +23,7 @@ DEFAULT_LOGGING = {
         },
     },
     "loggers": {
-        "mds": {
+        LOGGER_NAME: {
             "handlers": ["console"],
             "level": settings.LOG_LEVEL,
         },
@@ -48,14 +50,12 @@ def configure_logging(
             logging_config_func(logging_settings)
 
     if log_level:
-        print(f"Set log level to {log_level}")
-
         # Update logging level before applying default config
-        DEFAULT_LOGGING["loggers"][settings.LOGGER_NAME]["level"] = log_level
+        DEFAULT_LOGGING["loggers"][LOGGER_NAME]["level"] = log_level
 
     # Apply the updated logging config
     logging.config.dictConfig(DEFAULT_LOGGING)
 
     # Ensure logger picks up the new level
-    logger = logging.getLogger(settings.LOGGER_NAME)
+    logger = logging.getLogger(LOGGER_NAME)
     logger.setLevel(log_level)

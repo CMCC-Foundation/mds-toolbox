@@ -13,3 +13,9 @@ def setup(**kwargs) -> None:
     """
     settings.configure(**kwargs)
     configure_logging(settings.LOGGING_CONFIG, settings.LOGGING, settings.LOG_LEVEL)
+
+
+__all__ = [
+    mds_s3.__name__,
+    wrapper.__name__,
+]

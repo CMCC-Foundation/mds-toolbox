@@ -2,11 +2,11 @@
 
 """Temporary script to start mds-toolbox from CLI"""
 
-from mds.mng import cli
+from mds.mng import start_from_command_line_interface
 
 
 def main():
-    cli()
+    start_from_command_line_interface()
 
 
 if __name__ == "__main__":

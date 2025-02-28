@@ -2,10 +2,10 @@ import os
 from multiprocessing import Pool
 from typing import List
 
-from src.download.s3file import S3File
-from src.download import s3_singleton
-from src.download import utils
-from src.lib import logging_config
+from mds.core.s3file import S3File
+from mds.core import s3_singleton
+from mds.core import utils
+from mds.utils import logging_config
 
 # conf
 logger = logging_config.set_up("mds_s3")

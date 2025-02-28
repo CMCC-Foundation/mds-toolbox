@@ -2,8 +2,8 @@ import fnmatch
 import os
 import pytest
 
-import src.download.wrapper
-from src.download import utils
+import mds.core.wrapper
+from mds.core import utils
 
 
 def test_get_temporary_directory():
@@ -28,7 +28,7 @@ def test_cwf():
 
 def test_mds_download_wrong_mode(tmp_path):
     with pytest.raises(ValueError):
-        src.download.wrapper.mds_download("wrong")
+        mds.download.wrapper.mds_download("wrong")
 
 
 def test_mds_get_not_found(tmp_path):
@@ -39,7 +39,7 @@ def test_mds_get_not_found(tmp_path):
         )
         output_path = f"{tmp_path}"
 
-        src.download.wrapper.mds_download(
+        mds.download.wrapper.mds_download(
             "get",
             filter=output_filename,
             output_directory=output_path,
@@ -52,7 +52,7 @@ def test_mds_get_download(tmp_path):
     output_filename = "20231231_d-CMCC--TEMP-MFSeas8-MEDATL-b20240109_an-sv09.00.nc"
     output_path = f"{tmp_path}"
 
-    src.download.wrapper.mds_download(
+    mds.download.wrapper.mds_download(
         "get", filter=output_filename, output_directory=output_path, dataset_id=dataset
     )
 
@@ -63,7 +63,7 @@ def test_mds_get_list():
     dataset = "cmems_mod_med_phy-tem_anfc_4.2km_P1D-m"
     mds_filter = "*-CMCC--TEMP-MFSeas8-MEDATL-b20240109_an-sv09.00.nc"
 
-    result = src.download.wrapper.mds_list(dataset, mds_filter)
+    result = mds.download.wrapper.mds_list(dataset, mds_filter)
 
     assert isinstance(result, list)
     # best analysis keep on mds

@@ -7,7 +7,7 @@ import time
 
 from typing import Sequence, Callable
 
-from src.lib import logging_config
+from mds.utils import logging_config
 
 logger = logging_config.set_up("utils")
 

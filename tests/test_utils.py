@@ -1,4 +1,4 @@
-from src.download import utils
+from mds.core import utils
 
 
 def test_split_list_into_parts():

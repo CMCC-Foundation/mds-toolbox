@@ -11,6 +11,14 @@ import click
 
 from mds import mds_s3
 from mds import wrapper
+from mds.mng import initializer
+
+verbose = click.option(
+    "--log-level", "LOG_LEVEL",
+    type=click.Choice(["DEBUG", "INFO", "WARN", "ERROR", "CRITICAL", "QUIET"]),
+    default="INFO",
+    help="Verbosity level based on standard logging library",
+)
 
 
 @click.group()
@@ -79,6 +87,8 @@ def cli():
 )
 @click.option("-n", "--username", type=str, default=None, help="Username")
 @click.option("-w", "--password", type=str, default=None, help="Password")
+@verbose
+@initializer.init_app()
 def subset(**kwargs):
     wrapper.mds_download("subset", **kwargs)
 
@@ -124,6 +134,8 @@ def subset(**kwargs):
 )
 @click.option("-n", "--username", type=str, default=None, help="Username")
 @click.option("-w", "--password", type=str, default=None, help="Password")
+@verbose
+@initializer.init_app()
 def get(**kwargs):
     update = kwargs.pop("update")
     if update:
@@ -138,6 +150,8 @@ def get(**kwargs):
 @click.option(
     "-g", "--dataset-version", type=str, default=None, help="Dataset version or tag"
 )
+@verbose
+@initializer.init_app()
 def file_list(*args, **kwargs):
     mds_file_list = wrapper.mds_list(*args, **kwargs)
     print(f"{' '.join(mds_file_list)}")
@@ -174,6 +188,8 @@ def file_list(*args, **kwargs):
     default=None,
     help="Pattern to filter data (no regex)",
 )
+@verbose
+@initializer.init_app()
 def etag(**kwargs):
     s3_files = wrapper.mds_etag(**kwargs)
     for s3_file in s3_files:
@@ -245,6 +261,8 @@ def etag(**kwargs):
     default=False,
     help="Update the file if it changes on the server using etag information",
 )
+@verbose
+@initializer.init_app()
 def s3_get(**kwargs):
     mds_s3.download_files(**kwargs)
 
@@ -281,6 +299,8 @@ def s3_get(**kwargs):
 @click.option(
     "-r", "--recursive", is_flag=True, default=False, help="List recursive all s3 files"
 )
+@verbose
+@initializer.init_app()
 def s3_list(**kwargs):
     s3_files = mds_s3.get_file_list(**kwargs)
     print(f"{' '.join([f.file for f in s3_files])}")

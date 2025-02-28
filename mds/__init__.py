@@ -1,5 +1,8 @@
 from mds.conf import settings
 
+from mds.core import mds_s3
+from mds.core import wrapper
+
 
 def setup(**kwargs) -> None:
     """

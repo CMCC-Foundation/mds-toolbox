@@ -14,7 +14,8 @@ from mds import wrapper
 from mds.mng import initializer
 
 verbose = click.option(
-    "--log-level", "LOG_LEVEL",
+    "--log-level",
+    "LOG_LEVEL",
     type=click.Choice(["DEBUG", "INFO", "WARN", "ERROR", "CRITICAL", "QUIET"]),
     default="INFO",
     help="Verbosity level based on standard logging library",

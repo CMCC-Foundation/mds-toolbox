@@ -1,19 +1,19 @@
-import glob
 import fnmatch
+import glob
+import logging
 import multiprocessing
-import boto3
 import os
 
+import boto3
 from botocore import UNSIGNED
 from botocore.config import Config
 
 from mds.core.s3file import S3File
-from mds.utils import logging_config
 
 # conf
+logger = logging.getLogger("mds")
 lock = multiprocessing.Lock()
 S3_ENDPOINT = "https://s3.waw3-1.cloudferro.com"
-logger = logging_config.set_up("s3")
 
 
 class Singleton(type):

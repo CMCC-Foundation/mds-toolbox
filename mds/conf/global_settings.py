@@ -9,4 +9,3 @@ LOGGING_CONFIG = "logging.config.dictConfig"
 LOGGING = {}
 
 LOG_LEVEL = "INFO"
-LOGGER_NAME = "mds"

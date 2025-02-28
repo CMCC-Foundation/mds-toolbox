@@ -8,7 +8,7 @@ class Settings:
     def __init__(self, *modules):
         """
         Initialize the Settings instance with the provided modules.
-        
+
         Args:
             *modules: Variable length argument list of modules to load settings from.
         """
@@ -20,7 +20,7 @@ class Settings:
     def configure(self, **ext_settings):
         """
         Configure the settings instance by setting new values or overriding existing ones.
-        
+
         Args:
             **ext_settings: Arbitrary keyword arguments representing settings to be configured.
                             Only capital keywords are considered.

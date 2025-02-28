@@ -21,7 +21,7 @@ DEFAULT_LOGGING = {
         },
     },
     "loggers": {
-        settings.LOGGER_NAME: {
+        "mds": {
             "handlers": ["console"],
             "level": settings.LOG_LEVEL,
         },
@@ -30,14 +30,15 @@ DEFAULT_LOGGING = {
 }
 
 
-def configure_logging(logging_config: str, logging_settings: dict, log_level: str) -> None:
+def configure_logging(
+    logging_config: str, logging_settings: dict, log_level: str
+) -> None:
     """
 
     Args:
         logging_config: Callable to use to configure logging
         logging_settings: Dictionary of logging settings
         log_level: Logging level
-
     """
     if logging_config:
         logging_config_func = import_string(logging_config)

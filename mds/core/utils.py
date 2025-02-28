@@ -1,15 +1,14 @@
 import datetime
 import hashlib
 import json
+import logging
 import os
 import shutil
 import time
-
 from typing import Sequence, Callable
 
-from mds.utils import logging_config
 
-logger = logging_config.set_up("utils")
+logger = logging.getLogger("mds")
 
 
 def cwd() -> str:

@@ -1,11 +1,7 @@
-import logging
-
 from mds.conf import settings
 from mds.core import mds_s3
 from mds.core import wrapper
 from mds.utils.log import configure_logging
-
-logger = logging.getLogger(settings.LOGGER_NAME)
 
 
 def setup(**kwargs) -> None:

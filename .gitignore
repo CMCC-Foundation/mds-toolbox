@@ -5,3 +5,6 @@ __pycache__
 
 # extensions
 *.nc
+
+# files
+poetry.lock

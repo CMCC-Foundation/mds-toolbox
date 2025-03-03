@@ -13,22 +13,9 @@ verbose = click.option(
 )
 
 
-@click.group()
+@click.group(help="Manage S3 groups")
 def s3_cli() -> None:
     pass
-
-
-@s3_cli.command()
-@click.argument("dataset_id", type=str)
-@click.argument("mds_filter", type=str)
-@click.option(
-    "-g", "--dataset-version", type=str, default=None, help="Dataset version or tag"
-)
-@verbose
-@initializer.init_app()
-def file_list(*args, **kwargs):
-    mds_file_list = wrapper.mds_list(*args, **kwargs)
-    print(f"{' '.join(mds_file_list)}")
 
 
 @s3_cli.command()
@@ -63,8 +50,9 @@ def file_list(*args, **kwargs):
     help="Pattern to filter data (no regex)",
 )
 @verbose
-@initializer.init_app()
+@initializer.init_app
 def etag(**kwargs):
+    """Get the etag of a give S3 file"""
     s3_files = wrapper.mds_etag(**kwargs)
     for s3_file in s3_files:
         print(f"{s3_file.name} {s3_file.etag}")
@@ -136,8 +124,9 @@ def etag(**kwargs):
     help="Update the file if it changes on the server using etag information",
 )
 @verbose
-@initializer.init_app()
+@initializer.init_app
 def s3_get(**kwargs):
+    """Download files with direct access to MDS using S3"""
     mds_s3.download_files(**kwargs)
 
 
@@ -174,7 +163,8 @@ def s3_get(**kwargs):
     "-r", "--recursive", is_flag=True, default=False, help="List recursive all s3 files"
 )
 @verbose
-@initializer.init_app()
+@initializer.init_app
 def s3_list(**kwargs):
+    """Listing file on MDS using S3"""
     s3_files = mds_s3.get_file_list(**kwargs)
     print(f"{' '.join([f.file for f in s3_files])}")

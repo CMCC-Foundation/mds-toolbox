@@ -18,6 +18,20 @@ def wrapper_cli() -> None:
 
 
 @wrapper_cli.command()
+@click.argument("dataset_id", type=str)
+@click.argument("mds_filter", type=str)
+@click.option(
+    "-g", "--dataset-version", type=str, default=None, help="Dataset version or tag"
+)
+@verbose
+@initializer.init_app
+def file_list(*args, **kwargs):
+    """Wrapper to copernicus marine toolbox file list"""
+    mds_file_list = wrapper.mds_list(*args, **kwargs)
+    print(f"{' '.join(mds_file_list)}")
+
+
+@wrapper_cli.command()
 @click.option(
     "-o", "--output-directory", required=True, type=str, help="Output directory"
 )
@@ -79,8 +93,9 @@ def wrapper_cli() -> None:
 @click.option("-n", "--username", type=str, default=None, help="Username")
 @click.option("-w", "--password", type=str, default=None, help="Password")
 @verbose
-@initializer.init_app()
+@initializer.init_app
 def subset(**kwargs):
+    """Wrapper to copernicusmarine subset"""
     wrapper.mds_download("subset", **kwargs)
 
 
@@ -126,8 +141,9 @@ def subset(**kwargs):
 @click.option("-n", "--username", type=str, default=None, help="Username")
 @click.option("-w", "--password", type=str, default=None, help="Password")
 @verbose
-@initializer.init_app()
+@initializer.init_app
 def get(**kwargs):
+    """Wrapper to copernicusmarine get"""
     update = kwargs.pop("update")
     if update:
         wrapper.mds_update_download(**kwargs)

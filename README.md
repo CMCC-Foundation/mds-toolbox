@@ -28,7 +28,7 @@ or [botos3](https://boto3.amazonaws.com/v1/documentation/api/latest/index.html)
 The script provides several commands for different download operations:
 
 ```shell
-$ ./mds.py --help
+$ ./run_cli.py --help
 Usage: mds.py [OPTIONS] COMMAND [ARGS]...
 
 Options:
@@ -78,13 +78,13 @@ Options:
 **Example**
 
 ```shell
-./mds.py  s3-get -i cmems_obs-ins_med_phybgcwav_mynrt_na_irr -b mdl-native-03 -g 202311 -p INSITU_MED_PHYBGCWAV_DISCRETE_MYNRT_013_035 -o "/work/antonio/20240320" -s latest/20240320 --keep-timestamps --sync-etag -f 20240320
+./run_cli.py s3-get -i cmems_obs-ins_med_phybgcwav_mynrt_na_irr -b mdl-native-03 -g 202311 -p INSITU_MED_PHYBGCWAV_DISCRETE_MYNRT_013_035 -o "/work/antonio/20240320" -s latest/$(date -du +"%Y%m%d") --keep-timestamps --sync-etag -f $(date -du +"%Y%m%d")
 ```
 
 **Example using threads**
 
 ```shell
-./mds.py  s3-get --threads 10 -i cmems_obs-ins_med_phybgcwav_mynrt_na_irr -b mdl-native-03 -g 202311 -p INSITU_MED_PHYBGCWAV_DISCRETE_MYNRT_013_035 -o "/work/antonio/20240320" -s latest/20240320 --keep-timestamps --sync-etag -f 20240320
+./run_cli.py s3-get --threads 10 -i cmems_obs-ins_med_phybgcwav_mynrt_na_irr -b mdl-native-03 -g 202311 -p INSITU_MED_PHYBGCWAV_DISCRETE_MYNRT_013_035 -o "." -s latest/$(date -du +"%Y%m%d") --keep-timestamps --sync-etag -f $(date -du +"%Y%m%d")
 ```
 
 ### s3-list
@@ -107,13 +107,13 @@ Options:
 **Example**
 
 ```shell
-./mds.py s3-list -b mdl-native-01 -p INSITU_GLO_PHYBGCWAV_DISCRETE_MYNRT_013_030 -i cmems_obs-ins_glo_phybgcwav_mynrt_na_irr -g 202311 -s "monthly/BO/202401" -f "*"
+./run_cli.py s3-list -b mdl-native-01 -p INSITU_GLO_PHYBGCWAV_DISCRETE_MYNRT_013_030 -i cmems_obs-ins_glo_phybgcwav_mynrt_na_irr -g 202311 -s "monthly/BO/202401" -f "*" | tr " " "\n"
 ```
 
 **Example recursive**
 
 ```shell
-./mds.py s3-list -b mdl-native-12 -p MEDSEA_ANALYSISFORECAST_PHY_006_013 -f '*' -r
+./run_cli.py s3-list -b mdl-native-12 -p MEDSEA_ANALYSISFORECAST_PHY_006_013 -f '*' -r | tr " " "\n"
 ```
 
 
@@ -155,10 +155,10 @@ Options:
   --help                         Show this message and exit.
 ```
 
-**Example**
+**Example (not working)**
 
 ```shell
-./mds.py subset -f output.nc -o . -i cmems_mod_glo_phy-thetao_anfc_0.083deg_P1D-m -x -18.16666 -X 1 -y 30.16667 -Y 46 -z 0.494025 -Z 5727.917 -t 2024-01-01 -T 2024-01-01 -v thetao 
+./run_cli.py subset -f output.nc -o . -i cmems_mod_glo_phy-thetao_anfc_0.083deg_P1D-m -x -18.16667 -X 1.0 -y 30.16 -Y 46.0 -z 0.493 -Z 5727.918000000001 -t 2025-01-01 -T 2025-01-01 -v thetao 
 ```
 
 ### Get
@@ -190,10 +190,10 @@ Options:
   --help                       Show this message and exi
 ```
 
-**Example**
+**Example (not working)**
 
 ```shell
-./mds.py get -f '2023123*_d-CMCC--TEMP-MFSeas8-MEDATL-b20240109_an-sv09.00.nc' -o . -i cmems_mod_med_phy-tem_anfc_4.2km_P1D-m
+./run_cli.py get -f '20250210*_d-CMCC--TEMP-MFSeas8-MEDATL-b20250225_an-sv09.00.nc' -o . -i cmems_mod_med_phy-tem_anfc_4.2km_P1D-m
 ```
 
 ### File List
@@ -208,10 +208,10 @@ Options:
   --help                      Show this message and exit.
 ```
 
-**Example**
+**Example (not working)**
 
 ```shell
-./mds.py file-list cmems_mod_med_phy-cur_anfc_4.2km_PT15M-i *b20231212* -g 202311
+./run_cli.py file-list cmems_mod_med_phy-cur_anfc_4.2km_PT15M-i *b20250225* -g 202411
 ```
 
 ### Etag
@@ -235,13 +235,13 @@ Options:
 With a specific file:
 
 ```shell
-./mds.py etag -e s3://mdl-native-12/native/MEDSEA_ANALYSISFORECAST_PHY_006_013/cmems_mod_med_phy-cur_anfc_4.2km_PT15M-i_202311/2023/11/20231127_qm-CMCC--RFVL-MFSeas8-MEDATL-b20231212_an-sv09.00.nc
+./run_cli.py etag -e s3://mdl-native-12/native/MEDSEA_ANALYSISFORECAST_PHY_006_013/cmems_mod_med_phy-tem_anfc_4.2km_P1D-m_202411/2023/08/20230820_d-CMCC--TEMP-MFSeas9-MEDATL-b20240607_an-sv10.00.nc
 ```
 
 Or:
 
 ```shell
-./mds.py etag -p MEDSEA_ANALYSISFORECAST_PHY_006_013 -i cmems_mod_med_phy-cur_anfc_4.2km_PT15M-i -g 202311 -f '*b20231212*' -s 2023/12
+./run_cli.py etag -p MEDSEA_ANALYSISFORECAST_PHY_006_013 -i cmems_mod_med_phy-cur_anfc_4.2km_PT15M-i -g 202411 -f '*b20241212*' -s 2024/12
 ```
 
 

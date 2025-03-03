@@ -10,6 +10,8 @@ or [botos3](https://boto3.amazonaws.com/v1/documentation/api/latest/index.html)
 
 <!-- TOC -->
 * [Marine Data Store ToolBox](#marine-data-store-toolbox)
+* [How to Install it](#how-to-install-it)
+  * [Uninstall](#uninstall)
 * [Usage](#usage)
   * [S3 direct access](#s3-direct-access)
     * [s3-get](#s3-get)
@@ -22,6 +24,27 @@ or [botos3](https://boto3.amazonaws.com/v1/documentation/api/latest/index.html)
   * [Authors](#authors)
 <!-- TOC -->
 
+---
+# How to Install it
+
+Create the conda environment:
+
+```shell
+mamba env create -f environment.yml
+mamba activate mdsenv
+
+pip install .
+```
+
+## Uninstall
+
+To uninstall it:
+
+```shell
+mamba activate mdsenv
+
+pip uninstall mds-toolbox
+```
 
 ---
 
@@ -30,19 +53,18 @@ or [botos3](https://boto3.amazonaws.com/v1/documentation/api/latest/index.html)
 The script provides several commands for different download operations:
 
 ```shell
-$ ./run_cli.py --help
-Usage: mds.py [OPTIONS] COMMAND [ARGS]...
+Usage: mds [OPTIONS] COMMAND [ARGS]...
 
 Options:
-  --help  Show this message and exit.
+  -h, --help  Show this message and exit.
 
 Commands:
-  etag
-  file-list
-  get
-  s3-get
-  s3-list
-  subset
+  etag       Get the etag of a give S3 file
+  file-list  Wrapper to copernicus marine toolbox file list
+  get        Wrapper to copernicusmarine get
+  s3-get     Download files with direct access to MDS using S3
+  s3-list    Listing file on MDS using S3
+  subset     Wrapper to copernicusmarine subset
 ```
 
 ---
@@ -57,7 +79,7 @@ Since the copernicusmarine tool add a heavy overhead to s3 request, two function
 ### s3-get
 
 ```shell
-Usage: mds.py s3-get [OPTIONS]
+Usage: mds s3-get [OPTIONS]
 
 Options:
   -b, --bucket TEXT            Bucket name  [required]
@@ -83,13 +105,13 @@ Options:
 **Example**
 
 ```shell
-./run_cli.py s3-get -i cmems_obs-ins_med_phybgcwav_mynrt_na_irr -b mdl-native-03 -g 202311 -p INSITU_MED_PHYBGCWAV_DISCRETE_MYNRT_013_035 -o "/work/antonio/20240320" -s latest/$(date -du +"%Y%m%d") --keep-timestamps --sync-etag -f $(date -du +"%Y%m%d")
+mds s3-get -i cmems_obs-ins_med_phybgcwav_mynrt_na_irr -b mdl-native-03 -g 202311 -p INSITU_MED_PHYBGCWAV_DISCRETE_MYNRT_013_035 -o "/work/antonio/20240320" -s latest/$(date -du +"%Y%m%d") --keep-timestamps --sync-etag -f $(date -du +"%Y%m%d")
 ```
 
 **Example using threads**
 
 ```shell
-./run_cli.py s3-get --threads 10 -i cmems_obs-ins_med_phybgcwav_mynrt_na_irr -b mdl-native-03 -g 202311 -p INSITU_MED_PHYBGCWAV_DISCRETE_MYNRT_013_035 -o "." -s latest/$(date -du +"%Y%m%d") --keep-timestamps --sync-etag -f $(date -du +"%Y%m%d")
+mds s3-get --threads 10 -i cmems_obs-ins_med_phybgcwav_mynrt_na_irr -b mdl-native-03 -g 202311 -p INSITU_MED_PHYBGCWAV_DISCRETE_MYNRT_013_035 -o "." -s latest/$(date -du +"%Y%m%d") --keep-timestamps --sync-etag -f $(date -du +"%Y%m%d")
 ```
 
 ### s3-list
@@ -112,13 +134,13 @@ Options:
 **Example**
 
 ```shell
-./run_cli.py s3-list -b mdl-native-01 -p INSITU_GLO_PHYBGCWAV_DISCRETE_MYNRT_013_030 -i cmems_obs-ins_glo_phybgcwav_mynrt_na_irr -g 202311 -s "monthly/BO/202401" -f "*" | tr " " "\n"
+mds s3-list -b mdl-native-01 -p INSITU_GLO_PHYBGCWAV_DISCRETE_MYNRT_013_030 -i cmems_obs-ins_glo_phybgcwav_mynrt_na_irr -g 202311 -s "monthly/BO/202401" -f "*" | tr " " "\n"
 ```
 
 **Example recursive**
 
 ```shell
-./run_cli.py s3-list -b mdl-native-12 -p MEDSEA_ANALYSISFORECAST_PHY_006_013 -f '*' -r | tr " " "\n"
+mds s3-list -b mdl-native-12 -p MEDSEA_ANALYSISFORECAST_PHY_006_013 -f '*' -r | tr " " "\n"
 ```
 
 ---
@@ -164,7 +186,7 @@ Options:
 **Example (not working)**
 
 ```shell
-./run_cli.py subset -f output.nc -o . -i cmems_mod_glo_phy-thetao_anfc_0.083deg_P1D-m -x -18.16667 -X 1.0 -y 30.16 -Y 46.0 -z 0.493 -Z 5727.918000000001 -t 2025-01-01 -T 2025-01-01 -v thetao 
+mds subset -f output.nc -o . -i cmems_mod_glo_phy-thetao_anfc_0.083deg_P1D-m -x -18.16667 -X 1.0 -y 30.16 -Y 46.0 -z 0.493 -Z 5727.918000000001 -t 2025-01-01 -T 2025-01-01 -v thetao 
 ```
 
 ### Get
@@ -199,7 +221,7 @@ Options:
 **Example (not working)**
 
 ```shell
-./run_cli.py get -f '20250210*_d-CMCC--TEMP-MFSeas8-MEDATL-b20250225_an-sv09.00.nc' -o . -i cmems_mod_med_phy-tem_anfc_4.2km_P1D-m
+mds get -f '20250210*_d-CMCC--TEMP-MFSeas8-MEDATL-b20250225_an-sv09.00.nc' -o . -i cmems_mod_med_phy-tem_anfc_4.2km_P1D-m
 ```
 
 ### File List
@@ -217,7 +239,7 @@ Options:
 **Example (not working)**
 
 ```shell
-./run_cli.py file-list cmems_mod_med_phy-cur_anfc_4.2km_PT15M-i *b20250225* -g 202411
+mds file-list cmems_mod_med_phy-cur_anfc_4.2km_PT15M-i *b20250225* -g 202411
 ```
 
 ### Etag
@@ -241,13 +263,13 @@ Options:
 With a specific file:
 
 ```shell
-./run_cli.py etag -e s3://mdl-native-12/native/MEDSEA_ANALYSISFORECAST_PHY_006_013/cmems_mod_med_phy-tem_anfc_4.2km_P1D-m_202411/2023/08/20230820_d-CMCC--TEMP-MFSeas9-MEDATL-b20240607_an-sv10.00.nc
+mds etag -e s3://mdl-native-12/native/MEDSEA_ANALYSISFORECAST_PHY_006_013/cmems_mod_med_phy-tem_anfc_4.2km_P1D-m_202411/2023/08/20230820_d-CMCC--TEMP-MFSeas9-MEDATL-b20240607_an-sv10.00.nc
 ```
 
 Or:
 
 ```shell
-./run_cli.py etag -p MEDSEA_ANALYSISFORECAST_PHY_006_013 -i cmems_mod_med_phy-cur_anfc_4.2km_PT15M-i -g 202411 -f '*b20241212*' -s 2024/12
+mds etag -p MEDSEA_ANALYSISFORECAST_PHY_006_013 -i cmems_mod_med_phy-cur_anfc_4.2km_PT15M-i -g 202411 -f '*b20241212*' -s 2024/12
 ```
 
 ---

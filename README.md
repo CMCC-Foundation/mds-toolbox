@@ -1,6 +1,6 @@
 # Marine Data Store ToolBox
 
-This Python script provides a command-line interface (CLI) for downloading datasets using 
+This Python script provides a command-line interface (CLI) for downloading datasets using
 [copernicusmarine toolbox](https://help.marine.copernicus.eu/en/collections/4060068-copernicus-marine-toolbox)
 or [botos3](https://boto3.amazonaws.com/v1/documentation/api/latest/index.html)
 
@@ -24,7 +24,9 @@ or [botos3](https://boto3.amazonaws.com/v1/documentation/api/latest/index.html)
 
 
 ---
+
 # Usage
+
 The script provides several commands for different download operations:
 
 ```shell
@@ -44,13 +46,16 @@ Commands:
 ```
 
 ---
+
 ## S3 direct access
+
 Since the copernicusmarine tool add a heavy overhead to s3 request, two functions has been developed to:
 
 * make very fast s3 request
 * provide a thread-safe access to s3 client
 
 ### s3-get
+
 ```shell
 Usage: mds.py s3-get [OPTIONS]
 
@@ -116,13 +121,14 @@ Options:
 ./run_cli.py s3-list -b mdl-native-12 -p MEDSEA_ANALYSISFORECAST_PHY_006_013 -f '*' -r | tr " " "\n"
 ```
 
-
 ---
+
 ## Wrapper for copernicusmarine
 
-**The following functions rely on copernicusmarine implementation, the final result is strictly related to the installed version**
+**The following functions rely on copernicusmarine implementation, the final result is strictly related to the installed
+version**
 
-###  Subset
+### Subset
 
 ```shell
 Usage: mds.py subset [OPTIONS]
@@ -244,8 +250,8 @@ Or:
 ./run_cli.py etag -p MEDSEA_ANALYSISFORECAST_PHY_006_013 -i cmems_mod_med_phy-cur_anfc_4.2km_PT15M-i -g 202411 -f '*b20241212*' -s 2024/12
 ```
 
-
 ---
+
 ## Authors
 
 * Antonio Mariani - antonio.mariani@cmcc.it

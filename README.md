@@ -183,7 +183,7 @@ Options:
   --help                         Show this message and exit.
 ```
 
-**Example (not working)**
+**Example**
 
 ```shell
 mds subset -f output.nc -o . -i cmems_mod_glo_phy-thetao_anfc_0.083deg_P1D-m -x -18.16667 -X 1.0 -y 30.16 -Y 46.0 -z 0.493 -Z 5727.918000000001 -t 2025-01-01 -T 2025-01-01 -v thetao 
@@ -218,10 +218,10 @@ Options:
   --help                       Show this message and exi
 ```
 
-**Example (not working)**
+**Example**
 
 ```shell
-mds get -f '20250210*_d-CMCC--TEMP-MFSeas8-MEDATL-b20250225_an-sv09.00.nc' -o . -i cmems_mod_med_phy-tem_anfc_4.2km_P1D-m
+mds get -f '20250210*_d-CMCC--TEMP-MFSeas9-MEDATL-b20250225_an-sv10.00.nc' -o . -i cmems_mod_med_phy-tem_anfc_4.2km_P1D-m
 ```
 
 ### File List
@@ -236,7 +236,7 @@ Options:
   --help                      Show this message and exit.
 ```
 
-**Example (not working)**
+**Example**
 
 ```shell
 mds file-list cmems_mod_med_phy-cur_anfc_4.2km_PT15M-i *b20250225* -g 202411

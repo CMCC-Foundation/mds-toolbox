@@ -1,0 +1,9 @@
+name: mdsenv
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.10
+  - copernicusmarine=1.2.3
+  - boto3 >=1.37.4
+  - click >=8.1.8

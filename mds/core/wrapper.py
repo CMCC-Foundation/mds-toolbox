@@ -94,7 +94,6 @@ def mds_list(dataset_id, mds_filter: str, quiet=True, dataset_version=None) -> L
         "filter": mds_filter,
         "output_directory": tempdir,
         "create_file_list": mds_output_filename,
-        "force_download": True,
         "disable_progress_bar": True,
         "dataset_version": dataset_version,
     }

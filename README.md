@@ -211,7 +211,6 @@ Options:
   -v, --dataset-version TEXT   Dry run
   -nd, --no-directories TEXT   Option to not recreate folder hierarchy in
                                output directory
-  --force-download TEXT        Flag to skip confirmation before download
   --disable-progress-bar TEXT  Flag to hide progress bar
   -n, --username TEXT          Username
   -w, --password TEXT          Password
@@ -263,13 +262,13 @@ Options:
 With a specific file:
 
 ```shell
-mds etag -e s3://mdl-native-12/native/MEDSEA_ANALYSISFORECAST_PHY_006_013/cmems_mod_med_phy-tem_anfc_4.2km_P1D-m_202411/2023/08/20230820_d-CMCC--TEMP-MFSeas9-MEDATL-b20240607_an-sv10.00.nc
+mds etag -e s3://mdl-native-12/native/MEDSEA_ANALYSISFORECAST_PHY_006_013/cmems_mod_med_phy-cur_anfc_4.2km_PT15M-i_202411/2025/05/20250501_qm-CMCC--RFVL-MFSeas9-MEDATL-b20250513_an-sv10.00.nc
 ```
 
 Or:
 
 ```shell
-mds etag -p MEDSEA_ANALYSISFORECAST_PHY_006_013 -i cmems_mod_med_phy-cur_anfc_4.2km_PT15M-i -g 202411 -f '*b20241212*' -s 2024/12
+mds etag -p MEDSEA_ANALYSISFORECAST_PHY_006_013 -i cmems_mod_med_phy-cur_anfc_4.2km_PT15M-i -g 202411 -f '*' -s 2025/05
 ```
 
 ---

@@ -36,7 +36,7 @@ def get(**get_kwargs) -> List[pathlib.Path]:
 
     # download
     utils.pprint_dict(get_kwargs)
-    result = copernicusmarine.get(**get_kwargs, no_metadata_cache=True)
+    result = copernicusmarine.get(**get_kwargs)
     return result
 
 

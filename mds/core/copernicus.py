@@ -17,8 +17,11 @@ SUBSET_MANDATORY_ATTRS = [
 
 
 def subset(**subset_kwargs) -> pathlib.Path:
-    subset_kwargs.update({"force_download": True, "disable_progress_bar": True})
+    subset_kwargs.update({"disable_progress_bar": True})
     utils.check_dict_validity(subset_kwargs, SUBSET_MANDATORY_ATTRS)
+
+    # patch needed because Click returns a tuple but subset() needs a list of variables
+    subset_kwargs["variables"] = list(subset_kwargs["variables"])
 
     # download
     utils.pprint_dict(subset_kwargs)
@@ -33,7 +36,7 @@ def get(**get_kwargs) -> List[pathlib.Path]:
 
     # download
     utils.pprint_dict(get_kwargs)
-    result = copernicusmarine.get(**get_kwargs, no_metadata_cache=True)
+    result = copernicusmarine.get(**get_kwargs)
     return result
 
 

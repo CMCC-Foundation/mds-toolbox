@@ -130,12 +130,6 @@ def subset(**kwargs):
     help="Option to not recreate folder hierarchy in output directory",
 )
 @click.option(
-    "--force-download",
-    type=str,
-    default=True,
-    help="Flag to skip confirmation before download",
-)
-@click.option(
     "--disable-progress-bar", type=str, default=True, help="Flag to hide progress bar"
 )
 @click.option("-n", "--username", type=str, default=None, help="Username")

@@ -67,7 +67,12 @@ class S3(metaclass=Singleton):
     def __init__(self, s3_endpoint=S3_ENDPOINT):
         s3_endpoint = s3_endpoint
         self.__s3 = boto3.client(
-            "s3", endpoint_url=s3_endpoint, config=Config(signature_version=UNSIGNED)
+            "s3",
+            endpoint_url=s3_endpoint,
+            config=Config(
+                signature_version=UNSIGNED,
+                retries={"max_attempts": 10, "mode": "adaptive"},
+            ),
         )
         self.__paginator = self.__s3.get_paginator("list_objects_v2")
 

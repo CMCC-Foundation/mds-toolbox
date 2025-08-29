@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "mds-toolbox"
-version = "2.0.1"
+version = "2.0.2"
 description = "A custom CMCC library to list and download data from the Marine Data Store"
 authors = ["Antonio Mariani <antonio.mariani@cmcc.it>"]
 readme = ["README.md"]

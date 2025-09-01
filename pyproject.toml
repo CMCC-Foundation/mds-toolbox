@@ -24,3 +24,29 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.poetry.scripts]
 mds = "mds.mng:start_from_command_line_interface"
+
+[tool.towncrier]
+directory = "changes.d"
+name = "MDS ToolBox"
+package = "mds-toolbox"
+filename = "CHANGES.md"
+start_string = "<!-- towncrier release notes start -->\n"
+title_format = "## __[mds-toolbox-{version}](https://github.com/CMCC-Foundation/mds-toolbox/tree/{version}) - {project_date}__"
+issue_format = "[#{issue}](https://github.com/CMCC-Foundation/mds-toolbox/pull/{issue})"
+underlines = ["", "", ""]
+template = "changes.d/changelog_template.jinja"
+changelog_format = "markdown"
+
+# These changelog sections will be shown in the defined order:
+[[tool.towncrier.type]]
+directory = "break" # NB this is just the filename not directory e.g. 123.break.md
+name = "⚠ Breaking Changes"
+showcontent = true
+[[tool.towncrier.type]]
+directory = "feat"
+name = "🚀 Enhancements"
+showcontent = true
+[[tool.towncrier.type]]
+directory = "bugfix"
+name = "🔧 Fixes"
+showcontent = true

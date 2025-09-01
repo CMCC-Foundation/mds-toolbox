@@ -71,9 +71,10 @@ class S3(metaclass=Singleton):
             endpoint_url=s3_endpoint,
             config=Config(
                 signature_version=UNSIGNED,
-                retries={"total_max_attempts": 10, "mode": "adaptive", "tcp_keepalive": True},
+                retries={"total_max_attempts": 10, "mode": "adaptive"},
                 connect_timeout=300,
                 read_timeout=300,
+                tcp_keepalive=True,
             ),
         )
         self.__paginator = self.__s3.get_paginator("list_objects_v2")

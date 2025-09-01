@@ -3,9 +3,10 @@ __pycache__
 .idea
 .vscode
 
-# extensions
+# local tests
+.pid
 *.nc
 
-# files
+# poetry
 poetry.lock
-.pid
+dist

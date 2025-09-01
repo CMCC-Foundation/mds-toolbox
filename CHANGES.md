@@ -6,6 +6,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 <!-- towncrier release notes start -->
 
+## __[mds-toolbox-2.1](https://github.com/CMCC-Foundation/mds-toolbox/tree/2.1) - 2025-09-01__
+
+### 🚀 Enhancements
+
+[#9](https://github.com/CMCC-Foundation/mds-toolbox/pull/9) - Set tcp_keepalive=True in s3 connection
+
+[#11](https://github.com/CMCC-Foundation/mds-toolbox/pull/11) - Force copernicusmarine >=2.2.2 and remove requirements.txt
+
 ## __[mds-toolbox-2.0.2](https://github.com/CMCC-Foundation/mds-toolbox/tree/2.0.2) - 2025-08-29__
 
 ### 🚀 Enhancements
